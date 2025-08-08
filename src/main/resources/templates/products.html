@@ -40,6 +40,12 @@
         </div>
     </div>
 
+    {#if error == 'linked'}
+    <div class="alert alert-danger" role="alert">
+        Cannot delete this product because it is linked to existing orders.
+    </div>
+    {/if}
+
     <!-- PRODUCT LIST -->
     <div class="album py-5 bg-body-tertiary" style="position:relative; z-index: 0;" data-if="product_list">
         <div class="container">

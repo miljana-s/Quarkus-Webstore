@@ -72,7 +72,7 @@ public class StartupDataLoader {
         product2.name = "Black T-shirt";
         product2.price = 20.0;
         product2.quantity = 15;
-        product2.image = "https://m.media-amazon.com/images/I/81rntI+0XHL._AC_UX679_.jpg";
+        product2.image = "https://chriscross.in/cdn/shop/files/ChrisCrossBlackCottonT-Shirt.jpg?v=1740994605&width=1000";
         product2.category = getCategoryByEnum(CategoryEnum.TSHIRTS);
         em.persist(product2);
 

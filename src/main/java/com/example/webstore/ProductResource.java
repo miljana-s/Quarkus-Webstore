@@ -51,16 +51,19 @@ public class ProductResource {
     @GET
     @Path("/view")
     @Produces(MediaType.TEXT_HTML)
-    public String showProductsPage(@QueryParam("success") String success) {
+    public String showProductsPage(@QueryParam("success") String success,
+                                   @QueryParam("error") String error) {
         List<ProductResponse> productList = productService.listAll();
         return products.data("product_list", productList)
                 .data("success", success != null)
+                .data("error", error)
                 .data("term", "")
                 .data("categories", categoryService.getAllCategories())
                 .data("user_role", roleForTemplate())
                 .data("cart_count", cartCount())
                 .render();
     }
+
 
 
     @GET
@@ -71,6 +74,7 @@ public class ProductResource {
         return products.data("product_list", result)
                 .data("success", false)
                 .data("term", term)
+                .data("error", null)
                 .data("categories", categoryService.getAllCategories())
                 .data("user_role", roleForTemplate())
                 .data("cart_count", cartCount())
@@ -86,6 +90,7 @@ public class ProductResource {
         return products.data("product_list", result)
                 .data("success", false)
                 .data("term", "")
+                .data("error", null)
                 .data("categories", categoryService.getAllCategories())
                 .data("user_role", roleForTemplate())
                 .data("cart_count", cartCount())
@@ -153,9 +158,14 @@ public class ProductResource {
     @Path("/delete/{id}")
     @RolesAllowed("SELLER")
     public Response deleteProduct(@PathParam("id") Long id) {
-        productService.deleteById(id);
-        return Response.seeOther(URI.create("/products/view?success=true")).build();
+        try {
+            productService.deleteById(id);
+            return Response.seeOther(URI.create("/products/view?success=true")).build();
+        } catch (Exception e) {
+            return Response.seeOther(URI.create("/products/view?error=linked")).build();
+        }
     }
+
 
 
     @GET
