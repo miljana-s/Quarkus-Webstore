@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Cart</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
+</head>
+<body>
+
+{#include fragments/header /}
+
+<div class="container">
+
+  {#if success}
+    <div class="alert alert-success" role="alert">
+      Order sent successfully!
+    </div>
+  {/if}
+
+  <section class="h-100 h-custom" style="background-color: #d2c9ff;">
+    <div class="container py-5 h-100">
+      <div class="row d-flex justify-content-center align-items-center h-100">
+        <div class="col-12">
+          <div class="card card-registration card-registration-2" style="border-radius: 15px;">
+            <div class="card-body p-0">
+              <div class="row g-0">
+                <div class="col-lg-8">
+                  <div class="p-5">
+                    <div class="d-flex justify-content-between align-items-center mb-5">
+                      <h1 class="fw-bold mb-0 text-black">Shopping Cart</h1>
+                      <h6 class="mb-0 text-muted">{cart.totalItems} items</h6>
+                    </div>
+                    <div>
+                      {#if empty}
+                      <h5 class="fw-bold mb-0 text-black"> Your cart is empty. Please add some items before placing an order.</h5>
+                      {/if}
+                    </div>
+                    <hr class="my-4">
+
+                    {#for item in cartItems}
+                      <div class="row mb-4 d-flex justify-content-between align-items-center">
+                      <div class="col-md-2">
+                        <img src="{item.image}" class="img-fluid rounded-3">
+                      </div>
+                      <div class="col-md-3">
+                        <h6 class="text-muted">{item.product.category.name}</h6>
+                        <h6 class="text-black mb-0">{item.productName}</h6>
+                      </div>
+                      <div class="col-md-3 col-lg-3 col-xl-2 d-flex">
+                        <form method="get" action="/cart/decrease/{item.id}">
+                          <button class="btn btn-outline-secondary btn-sm" type="submit" {#if item.quantity == 1}disabled{/if}>-</button>
+                        </form>
+
+                        <h4 class="mx-2">{item.quantity}</h4>
+
+                        <form method="get" action="/cart/increase/{item.id}">
+                          <button class="btn btn-outline-secondary btn-sm" type="submit">+</button>
+                        </form>
+                      </div>
+
+                      <div class="col-md-2">
+                        <h6 class="mb-0">{item.getSubtotal} €</h6>
+                      </div>
+                      <div class="col-md-1 text-end">
+                      <form method="post" action="/cart/remove/{item.id}">
+                      <button class="btn btn-sm btn-danger">X</button>
+                      </form>
+                      </div>
+                      </div>
+                      <hr class="my-4">
+                    {/for}
+
+                    <div class="pt-5">
+                      <h6 class="mb-0">
+                        <a href="/products/view" class="text-body">Back to shop</a>
+                      </h6>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-lg-4 bg-grey">
+                  <div class="p-5">
+                    <h3 class="fw-bold mb-5">Summary</h3>
+                    <hr class="my-4">
+
+                    <div class="d-flex justify-content-between mb-4">
+                      <h5 class="text-uppercase">Total items</h5>
+                      <h5>{cart.totalItems}</h5>
+                    </div>
+
+                    <div class="d-flex justify-content-between mb-5">
+                      <h5 class="text-uppercase">Total price</h5>
+                      <h5 class="text-success"><strong>{totalPrice} €</strong></h5>
+                    </div>
+
+                    <div class="d-flex justify-content-between mb-5">
+                      <form method="post" action="/cart/confirm">
+                        <button class="btn btn-dark btn-lg"
+                                {#if cart_count == 0}disabled{/if}>SEND ORDER</button>
+                      </form>
+                      <form method="post" action="/cart/clear">
+                        <button class="btn btn-secondary btn-lg">CLEAN CART</button>
+                      </form>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+</body>
+</html>

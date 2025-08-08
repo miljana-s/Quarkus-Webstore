@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Orders</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background: #e4e4e4;
+      background: linear-gradient(90deg, #e4e4e4 0%, rgba(58, 136, 172, 0.73) 100%);
+      font-family: "Roboto", sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    .btn-action {
+      width: 100%;
+      margin-bottom: 5px;
+    }
+    .text-right {
+      text-align: right;
+    }
+  </style>
+</head>
+<body>
+
+{#include fragments/header /}
+
+<div class="container mt-5">
+  <h1 class="mb-4">Orders</h1>
+
+  <table class="table table-striped">
+    <thead class="table-dark">
+    <tr>
+      <th>OrderID</th>
+      <th class="text-right">Username</th>
+      <th class="text-right">Status</th>
+      <th class="text-right">Date</th>
+      <th class="text-right">Total Price</th>
+      <th class="text-right">Action</th>
+    </tr>
+    </thead>
+    <tbody>
+    {#for order in orders}
+      <tr>
+      <td>{order.id}</td>
+      <td class="text-right">{order.username}</td>
+      <td class="text-right">{order.status}</td>
+      <td class="text-right">{order.orderDate}</td>
+      <td class="text-right">{order.totalPrice}</td>
+      <td class="text-right">
+      {#if order.status != 'CONFIRMED'}
+        <form method="post" action="/orders/{order.id}/status">
+          <input type="hidden" name="status" value="CONFIRMED">
+          <button class="btn btn-primary w-50 btn-lg" type="submit">Confirm</button>
+        </form>
+      {/if}
+      <form method="post" action="/orders/{order.id}">
+        <button class="btn btn-danger w-50 btn-lg" type="submit">Decline</button>
+      </form>
+      </td>
+      </tr>
+    {/for}
+    </tbody>
+  </table>
+</div>
+</body>
+</html>

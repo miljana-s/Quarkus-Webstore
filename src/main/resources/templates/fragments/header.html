@@ -1,0 +1,64 @@
+<header class="p-3 text-white" style="background-color: #1e1e1e;">
+  <div class="container">
+    <div class="d-flex flex-wrap align-items-center justify-content-between">
+
+      <!-- Logo i naziv -->
+      <a href="/products/view" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
+        <i class="bi bi-shop fs-3 me-2"></i>
+        <span class="fs-4">Web Store</span>
+      </a>
+
+      <!-- Navigacija -->
+      <ul class="nav">
+        {#if user_role == 'SELLER'}
+          <!-- SELLER vidi: Add, Products, Orders; ne vidi Cart -->
+          <li class="nav-item">
+            <a href="/products/add-product" class="nav-link text-white">
+              <i class="bi bi-plus-square me-1"></i> Add
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="/products/view" class="nav-link text-white">
+              <i class="bi bi-grid me-1"></i> Products
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="/orders/view" class="nav-link text-white">
+              <i class="bi bi-card-list me-1"></i> Orders
+            </a>
+          </li>
+        {#else}
+          <!-- CUSTOMER/gost vidi: Products, Cart; ne vidi Add, Orders -->
+          <li class="nav-item">
+            <a href="/products/view" class="nav-link text-white">
+              <i class="bi bi-grid me-1"></i> Products
+            </a>
+          </li>
+            <li class="nav-item">
+            <a href="/cart/view" class="nav-link text-white position-relative">
+            <i class="bi bi-cart me-1"></i> Cart
+            {#if cart_count > 0}
+                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                {cart_count}
+                </span>
+            {/if}
+            </a>
+            </li>
+        {/if}
+
+        <li class="nav-item">
+          <a href="/webstore/profile" class="nav-link text-white">
+            <i class="bi bi-person-circle me-1"></i> Profile
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="/webstore/logout" class="nav-link text-white">
+            <i class="bi bi-power me-1"></i> Logout
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</header>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">

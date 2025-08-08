@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>User Profile</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+</head>
+<body>
+{#include fragments/header /}
+
+<div class="container py-5">
+    <div class="col-md-7 col-lg-8">
+
+        {#if showWarnMsg}
+        <div class="alert alert-danger" role="alert">
+            Profile not updated! Check if any field is changed.
+        </div>
+        {/if}
+
+        {#if showSuccMsg}
+        <div class="alert alert-success" role="alert">
+            Profile updated!
+        </div>
+        {/if}
+
+        <h4 class="mb-3">User profile</h4>
+
+        <form action="/webstore/profile" method="post">
+            <input type="hidden" name="id" value="{user.id}" />
+
+            <div class="row g-3">
+
+                <div class="col-sm-6">
+                    <label for="firstName" class="form-label">First name</label>
+                    <input type="text" class="form-control" id="firstName" name="firstName" value="{user.firstName}" required>
+                </div>
+
+                <div class="col-sm-6">
+                    <label for="lastName" class="form-label">Last name</label>
+                    <input type="text" class="form-control" id="lastName" name="lastName" value="{user.lastName}" required>
+                </div>
+
+                <div class="col-12">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="email" class="form-control" id="email" name="email" value="{user.email}" required>
+                </div>
+
+                <div class="col-12">
+                    <label for="phone" class="form-label">Phone</label>
+                    <input type="text" class="form-control" id="phone" name="phone" value="{user.phone}" required>
+                </div>
+
+                <div class="col-12">
+                    <label for="address" class="form-label">Address</label>
+                    <input type="text" class="form-control" id="address" name="address" value="{user.address}" required>
+                </div>
+
+                <div class="col-12">
+                    <label for="city" class="form-label">City</label>
+                    <input type="text" class="form-control" id="city" name="city" value="{user.city}" required>
+                </div>
+            </div>
+
+            <hr class="my-4">
+
+            <button class="w-100 btn btn-primary btn-lg" type="submit">Update profile</button>
+        </form>
+    </div>
+</div>
+</body>
+</html>
