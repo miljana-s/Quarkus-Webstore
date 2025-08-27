@@ -7,6 +7,7 @@ public class OrderItemDTO {
     public Long productId;
     public int quantity;
     public String productName;
+    public double price;
 
     public OrderItemDTO() {}
 

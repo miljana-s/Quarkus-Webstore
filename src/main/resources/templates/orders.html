@@ -40,14 +40,14 @@
       <td class="text-right">{order.username}</td>
       <td class="text-right">{order.status}</td>
       <td class="text-right">{order.orderDatePretty}</td>
-      <td class="text-right">{order.totalPricePretty}</td>
+      <td class="text-right">{order.totalPrice} &#8364;</td>
       <td class="text-nowrap">
 
         <button class="btn btn-outline-secondary btn-sm btn-action"
                 type="button"
                 data-bs-toggle="collapse"
                 data-bs-target="#items-{order.id}">
-          Items ({order.items.size})
+          Items Preview ({order.items.size})
         </button>
 
         {#if order.status != "CONFIRMED"}
@@ -69,7 +69,10 @@
           {#for it in order.items}
           <li class="list-group-item d-flex justify-content-between align-items-center">
             <a href="/products/overview/{it.productId}" class="text-decoration-none">{it.productName}</a>
+           <p>
+             <span>{it.price} &#8364;</span>
             <span class="badge bg-secondary rounded-pill">x{it.quantity}</span>
+           </p>
           </li>
           {/for}
         </ul>
