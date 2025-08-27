@@ -108,11 +108,14 @@ public class CartService {
     }
 
 
+
     public int countItems(Long userId) {
-        Cart cart = Cart.find("user.id = ?1", userId).firstResult();
-        if (cart == null || cart.items == null) return 0;
-        return cart.items.stream().mapToInt(i -> i.quantity).sum();
+        return CartItem.<CartItem>list("cart.user.id = ?1", userId)
+                .stream()
+                .mapToInt(ci -> ci.quantity)
+                .sum();
     }
+
 
 
 

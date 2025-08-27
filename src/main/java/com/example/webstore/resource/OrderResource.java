@@ -43,6 +43,7 @@ public class OrderResource {
         List<OrderResponse> orderResponses = orderService.listAllOrders();
         return orders.data("orders", orderResponses)
                 .data("user_role", roleForTemplate())
+                .data("cart_count", 0)
                 .render();
     }
 

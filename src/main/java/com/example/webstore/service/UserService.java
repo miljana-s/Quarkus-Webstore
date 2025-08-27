@@ -10,6 +10,8 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import io.quarkus.narayana.jta.QuarkusTransaction;
 
+import java.util.Objects;
+
 
 @ApplicationScoped
 public class UserService {
@@ -137,24 +139,16 @@ public class UserService {
             throw new WebApplicationException("User not found", 404);
         }
 
-        boolean changed = !(user.firstName.equals(dto.firstName)
-                && user.lastName.equals(dto.lastName)
-                && user.email.equals(dto.email)
-                && user.phone.equals(dto.phone)
-                && user.address.equals(dto.address)
-                && user.city.equals(dto.city));
+        boolean changed = false;
 
-        if (changed) {
-            user.firstName = dto.firstName;
-            user.lastName = dto.lastName;
-            user.email = dto.email;
-            user.phone = dto.phone;
-            user.address = dto.address;
-            user.city = dto.city;
-            return true;
-        }
+        if (!Objects.equals(user.firstName, dto.firstName)) { user.firstName = dto.firstName; changed = true; }
+        if (!Objects.equals(user.lastName,  dto.lastName))  { user.lastName  = dto.lastName;  changed = true; }
+        if (!Objects.equals(user.email,     dto.email))     { user.email     = dto.email;     changed = true; }
+        if (!Objects.equals(user.phone,     dto.phone))     { user.phone     = dto.phone;     changed = true; }
+        if (!Objects.equals(user.address,   dto.address))   { user.address   = dto.address;   changed = true; }
+        if (!Objects.equals(user.city,      dto.city))      { user.city      = dto.city;      changed = true; }
 
-        return false;
+        return changed;
     }
 
 
