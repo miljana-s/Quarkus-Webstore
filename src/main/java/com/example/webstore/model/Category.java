@@ -10,6 +10,7 @@ public class Category extends PanacheEntityBase {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long id;
 
+    @Column(unique = true)
     @Enumerated(EnumType.STRING)
     public CategoryEnum name;
 }

@@ -11,13 +11,8 @@
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
     }
-    .btn-action {
-      width: 100%;
-      margin-bottom: 5px;
-    }
-    .text-right {
-      text-align: right;
-    }
+    .btn-action { width: 100%; margin-bottom: 5px; }
+    .text-right { text-align: right; }
   </style>
 </head>
 <body>
@@ -40,27 +35,51 @@
     </thead>
     <tbody>
     {#for order in orders}
-      <tr>
+    <tr>
       <td>{order.id}</td>
       <td class="text-right">{order.username}</td>
       <td class="text-right">{order.status}</td>
-      <td class="text-right">{order.orderDate}</td>
-      <td class="text-right">{order.totalPrice}</td>
-      <td class="text-right">
-      {#if order.status != 'CONFIRMED'}
-        <form method="post" action="/orders/{order.id}/status">
+      <td class="text-right">{order.orderDatePretty}</td>
+      <td class="text-right">{order.totalPricePretty}</td>
+      <td class="text-nowrap">
+
+        <button class="btn btn-outline-secondary btn-sm btn-action"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#items-{order.id}">
+          Items ({order.items.size})
+        </button>
+
+        {#if order.status != "CONFIRMED"}
+        <form method="post" action="/orders/{order.id}/status" class="m-0">
           <input type="hidden" name="status" value="CONFIRMED">
-          <button class="btn btn-primary w-50 btn-lg" type="submit">Confirm</button>
+          <button class="btn btn-primary btn-action" type="submit">Confirm</button>
         </form>
-      {/if}
-      <form method="post" action="/orders/{order.id}">
-        <button class="btn btn-danger w-50 btn-lg" type="submit">Decline</button>
-      </form>
+        {/if}
+
+        <form method="post" action="/orders/{order.id}" class="m-0">
+          <button class="btn btn-danger btn-action" type="submit">Decline</button>
+        </form>
       </td>
-      </tr>
+    </tr>
+
+    <tr class="collapse" id="items-{order.id}">
+      <td colspan="6">
+        <ul class="list-group">
+          {#for it in order.items}
+          <li class="list-group-item d-flex justify-content-between align-items-center">
+            <a href="/products/overview/{it.productId}" class="text-decoration-none">{it.productName}</a>
+            <span class="badge bg-secondary rounded-pill">x{it.quantity}</span>
+          </li>
+          {/for}
+        </ul>
+      </td>
+    </tr>
     {/for}
     </tbody>
   </table>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

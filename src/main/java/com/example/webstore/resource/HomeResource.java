@@ -1,4 +1,4 @@
-package com.example.webstore;
+package com.example.webstore.resource;
 
 import io.quarkus.qute.Location;
 import io.quarkus.qute.Template;

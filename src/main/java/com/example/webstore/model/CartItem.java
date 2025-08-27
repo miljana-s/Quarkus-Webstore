@@ -1,10 +1,14 @@
 package com.example.webstore.model;
 
-import io.quarkus.hibernate.orm.panache.PanacheEntity;
+import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.persistence.*;
 
 @Entity
-public class CartItem extends PanacheEntity {
+public class CartItem extends PanacheEntityBase {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    public Long id;
 
     @ManyToOne
     @JoinColumn(name = "cart_id")

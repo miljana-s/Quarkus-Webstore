@@ -1,4 +1,4 @@
-package com.example.webstore;
+package com.example.webstore.resource;
 
 import com.example.webstore.dto.CartItemRequest;
 import com.example.webstore.dto.CartResponse;

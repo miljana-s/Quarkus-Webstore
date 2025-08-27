@@ -1,7 +1,9 @@
 package com.example.webstore.dto;
 
 import com.example.webstore.model.Product;
+import io.quarkus.qute.TemplateData;
 
+@TemplateData
 public class ProductResponse {
 
     public Long id;

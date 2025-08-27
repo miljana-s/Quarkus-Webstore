@@ -1,5 +1,8 @@
 package com.example.webstore.dto;
 
+import io.quarkus.qute.TemplateData;
+
+@TemplateData
 public class CategoryDTO {
     public Long id;
     public String name;

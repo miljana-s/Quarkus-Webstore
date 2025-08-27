@@ -1,4 +1,4 @@
-package com.example.webstore;
+package com.example.webstore.resource;
 
 import com.example.webstore.dto.UserDTO;
 import com.example.webstore.model.User;
@@ -132,20 +132,50 @@ public class UserResource {
     @POST
     @Path("/register")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    public Response handleRegister(@FormParam("firstName") String firstName,
-                                   @FormParam("lastName") String lastName,
-                                   @FormParam("username") String username,
-                                   @FormParam("password") String password,
-                                   @FormParam("email") String email,
-                                   @FormParam("phone") String phone,
-                                   @FormParam("address") String address,
-                                   @FormParam("city") String city) {
+    @Produces(MediaType.TEXT_HTML)
+    //@Produces(MediaType.TEXT_PLAIN)
+    public String handleRegister(@FormParam("firstName") String firstName,
+                                 @FormParam("lastName") String lastName,
+                                 @FormParam("username") String username,
+                                 @FormParam("password") String password,
+                                 @FormParam("email") String email,
+                                 @FormParam("phone") String phone,
+                                 @FormParam("address") String address,
+                                 @FormParam("city") String city) {
 
-        boolean success = userService.register(firstName, lastName, username, password, email, phone, address, city);
-        if (!success) {
-            return Response.seeOther(URI.create("/webstore/register?error=1")).build();
+
+        String error = userService.register(firstName, lastName, username, password,
+                email, phone, address, city);
+
+        if (error != null) {
+            return register
+                    .data("displayRegisterError", error)
+                    .render();
         }
-        return Response.seeOther(URI.create("/webstore/login")).build();
+
+        return login.data("displayLoginError", null).render();
     }
+
+//    @POST
+//    @Path("/register-api")
+//    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+//    @Produces(MediaType.TEXT_PLAIN)
+//    @Blocking
+//    public String registerApi(@FormParam("firstName") String firstName,
+//                              @FormParam("lastName") String lastName,
+//                              @FormParam("username") String username,
+//                              @FormParam("password") String password,
+//                              @FormParam("email") String email,
+//                              @FormParam("phone") String phone,
+//                              @FormParam("address") String address,
+//                              @FormParam("city") String city,
+//                              @FormParam("role_id") Long roleId) {
+//        if (roleId == null) roleId = 1L;
+//        String err = userService.register(firstName, lastName, username, password,
+//                email, phone, address, city, roleId);
+//        return err == null ? "OK" : "DUPLICATE_OR_ERROR";
+//    }
+
+
 
 }

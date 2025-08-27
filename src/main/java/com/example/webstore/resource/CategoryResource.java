@@ -1,4 +1,4 @@
-package com.example.webstore;
+package com.example.webstore.resource;
 
 import com.example.webstore.dto.CategoryDTO;
 import com.example.webstore.service.CategoryService;

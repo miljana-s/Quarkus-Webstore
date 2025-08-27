@@ -5,14 +5,17 @@ import com.example.webstore.model.*;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.WebApplicationException;
-import jakarta.ws.rs.core.Response;
-import org.mindrot.jbcrypt.BCrypt;
+import org.hibernate.exception.ConstraintViolationException;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import io.quarkus.narayana.jta.QuarkusTransaction;
 
-import java.util.List;
-import java.util.Map;
 
 @ApplicationScoped
 public class UserService {
+
+    @PersistenceContext
+    EntityManager em;
 
 
     public User loginAndGet(String username, String password) {
@@ -22,33 +25,93 @@ public class UserService {
         return user;
     }
 
+//    public String register(String firstName, String lastName, String username, String password,
+//                           String email, String phone, String address, String city, Long roleId) {
+//
+//        final String hashed = BCrypt.hashpw(password, BCrypt.gensalt(8)); // već imaš
+//
+//        try {
+//            return QuarkusTransaction.requiringNew().call(() -> {
+//                User u = new User();
+//                u.firstName = firstName;
+//                u.lastName  = lastName;
+//                u.username  = username;
+//                u.password  = hashed;
+//                u.email     = email;
+//                u.phone     = phone;
+//                u.address   = address;
+//                u.city      = city;
+//                u.role      = em.getReference(Role.class, roleId != null ? roleId : 1L);
+//
+//                try {
+//                    u.persist(); // bez pre-check SELECT-ova
+//                    return null; // OK
+//                } catch (Exception e) {
+//                    if (isUniqueViolation(e)) {
+//                        return "Username or email already exists! Try a different one.";
+//                    }
+//                    return "Registration failed. Please try again.";
+//                }
+//            });
+//        } catch (Exception outer) {
+//            return "Registration failed. Please try again.";
+//        }
+//    }
 
 
-    @Transactional
-    public boolean register(String firstName, String lastName, String username, String password,
-                            String email, String phone, String address, String city) {
-        if (User.find("username", username).firstResult() != null) {
-            return false;
+    public String register(String firstName, String lastName, String username, String password,
+                           String email, String phone, String address, String city) {
+
+        try {
+            return QuarkusTransaction.requiringNew().call(() -> {
+
+                if (User.find("username", username).firstResult() != null) {
+                    return "Username already exists! Try a different one.";
+                }
+                if (User.find("email", email).firstResult() != null) {
+                    return "Email already exists! Try a different one.";
+                }
+
+                User u = new User();
+                u.firstName = firstName;
+                u.lastName  = lastName;
+                u.username  = username;
+                u.password  = org.mindrot.jbcrypt.BCrypt.hashpw(password, org.mindrot.jbcrypt.BCrypt.gensalt());
+                u.email     = email;
+                u.phone     = phone;
+                u.address   = address;
+                u.city      = city;
+
+                Role defaultRole = Role.find("name", "CUSTOMER").firstResult();
+                u.role = defaultRole;
+
+                try {
+                    u.persistAndFlush();
+                    return null;
+                } catch (Exception e) {
+
+                    if (isUniqueViolation(e)) {
+                        return "Username or email already exists! Try a different one.";
+                    }
+                    return "Registration failed. Please try again.";
+                }
+            });
+        } catch (Exception outer) {
+
+            return "Registration failed. Please try again.";
         }
-
-        User newUser = new User();
-        newUser.firstName = firstName;
-        newUser.lastName = lastName;
-        newUser.username = username;
+    }
 
 
-        newUser.password = BCrypt.hashpw(password, BCrypt.gensalt());
-
-        newUser.email = email;
-        newUser.phone = phone;
-        newUser.address = address;
-        newUser.city = city;
-
-        Role defaultRole = Role.find("name", "CUSTOMER").firstResult();
-        newUser.role = defaultRole;
-
-        newUser.persist();
-        return true;
+    private boolean isUniqueViolation(Throwable t) {
+        while (t != null) {
+            if (t instanceof ConstraintViolationException ||
+                    t instanceof java.sql.SQLIntegrityConstraintViolationException) {
+                return true;
+            }
+            t = t.getCause();
+        }
+        return false;
     }
 
     public UserDTO getUserById(Long id) {

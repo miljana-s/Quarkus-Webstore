@@ -1,20 +1,25 @@
 package com.example.webstore.model;
 
-import io.quarkus.hibernate.orm.panache.PanacheEntity;
-import jakarta.persistence.Entity;
-import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
+import jakarta.persistence.*;
 
 @Entity
-public class User extends PanacheEntity {
+public class User extends PanacheEntityBase {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    public Long id;
 
     @NotBlank(message = "Username is required")
+    @Column(unique = true)
     public String username;
 
     @NotBlank(message = "Email is required")
     @Email(message = "Invalid email format")
+    @Column(unique = true)
     public String email;
 
     @NotBlank(message = "Password is required")

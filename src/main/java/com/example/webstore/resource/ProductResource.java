@@ -1,4 +1,4 @@
-package com.example.webstore;
+package com.example.webstore.resource;
 
 import com.example.webstore.dto.ProductRequest;
 import com.example.webstore.dto.ProductResponse;
@@ -15,8 +15,9 @@ import jakarta.ws.rs.core.Response;
 import org.eclipse.microprofile.jwt.JsonWebToken;
 
 import java.net.URI;
-import java.util.List;
 import java.util.Set;
+import java.util.stream.IntStream;
+
 
 @Path("/products")
 public class ProductResource {
@@ -52,32 +53,55 @@ public class ProductResource {
     @Path("/view")
     @Produces(MediaType.TEXT_HTML)
     public String showProductsPage(@QueryParam("success") String success,
-                                   @QueryParam("error") String error) {
-        List<ProductResponse> productList = productService.listAll();
-        return products.data("product_list", productList)
+                                   @QueryParam("error") String error,
+                                   @QueryParam("page") @DefaultValue("1") int page,
+                                   @QueryParam("size") @DefaultValue("12") int size) {
+
+        var result = productService.listPaged(page, size);
+
+        return products.data("product_list", result.items)
                 .data("success", success != null)
                 .data("error", error)
                 .data("term", "")
                 .data("categories", categoryService.getAllCategories())
                 .data("user_role", roleForTemplate())
                 .data("cart_count", cartCount())
+                .data("page", result.page)
+                .data("size", result.size)
+                .data("total", result.total)
+                .data("totalPages", result.totalPages)
+                .data("pages", pageWindow(result.page, result.totalPages, 2))
+                .data("pageBase", "/products/view")
+                .data("pageSep", "?")
                 .render();
     }
-
 
 
     @GET
     @Path("/search")
     @Produces(MediaType.TEXT_HTML)
-    public String searchProducts(@QueryParam("term") String term) {
-        List<ProductResponse> result = productService.searchByName(term);
-        return products.data("product_list", result)
+    public String searchProducts(@QueryParam("term") String term,
+                                 @QueryParam("page") @DefaultValue("1") int page,
+                                 @QueryParam("size") @DefaultValue("12") int size) {
+
+        var result = productService.searchByNamePaged(term, page, size);
+        String base = "/products/search?term=" + (term == null ? "" : term);
+        String sep = base.contains("?") ? "&" : "?";
+
+        return products.data("product_list", result.items)
                 .data("success", false)
                 .data("term", term)
                 .data("error", null)
                 .data("categories", categoryService.getAllCategories())
                 .data("user_role", roleForTemplate())
                 .data("cart_count", cartCount())
+                .data("page", result.page)
+                .data("size", result.size)
+                .data("total", result.total)
+                .data("totalPages", result.totalPages)
+                .data("pages", pageWindow(result.page, result.totalPages, 2))
+                .data("pageBase", base)
+                .data("pageSep", sep)
                 .render();
     }
 
@@ -85,15 +109,28 @@ public class ProductResource {
     @GET
     @Path("/type/{id}")
     @Produces(MediaType.TEXT_HTML)
-    public String filterByCategory(@PathParam("id") Long categoryId) {
-        List<ProductResponse> result = productService.filterByCategory(categoryId);
-        return products.data("product_list", result)
+    public String filterByCategory(@PathParam("id") Long categoryId,
+                                   @QueryParam("page") @DefaultValue("1") int page,
+                                   @QueryParam("size") @DefaultValue("12") int size) {
+
+        var result = productService.filterByCategoryPaged(categoryId, page, size);
+        String base = "/products/type/" + categoryId;
+        String sep = base.contains("?") ? "&" : "?";
+
+        return products.data("product_list", result.items)
                 .data("success", false)
                 .data("term", "")
                 .data("error", null)
                 .data("categories", categoryService.getAllCategories())
                 .data("user_role", roleForTemplate())
                 .data("cart_count", cartCount())
+                .data("page", result.page)
+                .data("size", result.size)
+                .data("total", result.total)
+                .data("totalPages", result.totalPages)
+                .data("pages", pageWindow(result.page, result.totalPages, 2))
+                .data("pageBase", base)
+                .data("pageSep", sep)
                 .render();
     }
 
@@ -211,5 +248,11 @@ public class ProductResource {
             }
         } catch (Exception ignored) {}
         return 0;
+    }
+
+    private static java.util.List<Integer> pageWindow(int page, int totalPages, int radius) {
+        int start = Math.max(1, page - radius);
+        int end = Math.min(totalPages, page + radius);
+        return IntStream.rangeClosed(start, end).boxed().toList();
     }
 }

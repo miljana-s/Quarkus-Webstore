@@ -1,17 +1,23 @@
-    package com.example.webstore.model;
+package com.example.webstore.model;
 
-    import io.quarkus.hibernate.orm.panache.PanacheEntity;
-    import jakarta.persistence.Entity;
+import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
+import jakarta.persistence.*;
 
-    @Entity
-    public class Role extends PanacheEntity {
-        public String name;
+@Entity
+public class Role extends PanacheEntityBase {
 
-        public String getName() {
-            return name;
-        }
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    public Long id;
 
-        public void setName(String name) {
-            this.name = name;
-        }
+    @Column(unique = true)
+    public String name;
+
+    public String getName() {
+        return name;
     }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+}

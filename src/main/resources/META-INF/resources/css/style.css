@@ -167,3 +167,23 @@ body {
 .bd-mode-toggle {
     z-index: 1500;
 }
+
+.page-item.active .page-link {
+    background-color: #ff5722; /* aktivna */
+    border-color: #ff5722;
+    color: #fff;
+}
+.page-link {                  /* normalni link */
+    color: #0b5ed7;
+}
+.page-link:hover {
+    color: #094db4;
+}
+/* disabled Prev/Next – pošto koristiš <span class="page-link"> */
+.page-item.disabled .page-link,
+span.page-link {
+    color: #adb5bd;
+    background-color: #e9ecef;
+    border-color: #dee2e6;
+}
+

@@ -1,10 +1,12 @@
 package com.example.webstore.dto;
 
 import com.example.webstore.model.Cart;
+import io.quarkus.qute.TemplateData;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@TemplateData
 public class CartResponse {
     public Long id;
     public Long userId;

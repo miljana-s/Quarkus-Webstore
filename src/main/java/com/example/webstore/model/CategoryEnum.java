@@ -1,5 +1,5 @@
 package com.example.webstore.model;
 
 public enum CategoryEnum {
-    JACKETS, SHIRTS, SHOES, SUITS, TROUSERS, TSHIRTS
+    NECKLACES, BRACELETS, EARRINGS, RINGS, PENDANTS, ANKLETS
 }

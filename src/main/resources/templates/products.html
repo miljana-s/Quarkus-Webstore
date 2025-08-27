@@ -20,6 +20,8 @@
             <form class="col-12 col-lg-auto mb-2 mb-lg-0 me-lg-auto" method="get" action="/products/search">
                 <input class="form-control" placeholder="Search By Name" aria-label="Search"
                        type="text" name="term" id="term" value="{term}" required>
+                <input type="hidden" name="size" value="{size}">
+
             </form>
 
             <!-- FILTER DROPDOWN -->
@@ -30,8 +32,8 @@
                 <ul class="dropdown-menu">
                     {#for cat in categories}
                     <li>
-                        <a class="dropdown-item" href="/products/type/{cat.id}">
-                            {cat.name}
+                        <a class="dropdown-item" href="/products/type/{cat.id}?size={size}">
+                        {cat.name}
                         </a>
                     </li>
                     {/for}
@@ -50,7 +52,6 @@
     <div class="album py-5 bg-body-tertiary" style="position:relative; z-index: 0;" data-if="product_list">
         <div class="container">
 
-            <!-- No products -->
             {#if product_list.isEmpty}
             <h1>Products not found...</h1>
             {/if}
@@ -75,7 +76,7 @@
 
                             <p class="card-text mt-2">{product.name}</p>
 
-                            <!-- actions + price row -->
+
                             <div class="d-flex align-items-center flex-wrap mt-auto">
                                 <div class="btn-group me-2 mb-2">
                                     <form method="get" action="/products/overview/{product.id}">
@@ -104,6 +105,46 @@
                 {/if}
                 {/for}
             </div>
+            {#if totalPages > 1}
+            <nav aria-label="Products pages" class="mt-4">
+                <ul class="pagination justify-content-center">
+
+                    <!-- Prev -->
+                    <li class="page-item {page == 1 ? 'disabled' : ''}">
+                        {#if page == 1}
+                        <span class="page-link" aria-label="Previous">&laquo;</span>
+                        {#else}
+                        <a class="page-link" href="{pageBase}{pageSep}page={page - 1}&size={size}" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                        {/if}
+                    </li>
+
+                    <!-- Numbers of pages -->
+                    {#for i in pages}
+                    <li class="page-item {i == page ? 'active' : ''}">
+                        <a class="page-link" href="{pageBase}{pageSep}page={i}&size={size}">{i}</a>
+                    </li>
+                    {/for}
+
+                    <!-- Next -->
+                    <li class="page-item {page == totalPages ? 'disabled' : ''}">
+                        {#if page == totalPages}
+                        <span class="page-link" aria-label="Next">&raquo;</span>
+                        {#else}
+                        <a class="page-link" href="{pageBase}{pageSep}page={page + 1}&size={size}" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                        {/if}
+                    </li>
+                </ul>
+
+                <div class="text-center text-muted small">
+                    Page {page} of {totalPages} · {total} items
+                </div>
+            </nav>
+            {/if}
+
         </div>
     </div>
 
