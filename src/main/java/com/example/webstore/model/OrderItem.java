@@ -22,4 +22,6 @@ public class OrderItem extends PanacheEntityBase {
     public Product product;
 
     public int quantity;
+
+    public double price;
 }

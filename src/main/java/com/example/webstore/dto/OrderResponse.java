@@ -18,12 +18,12 @@ public class OrderResponse {
     public List<OrderItemDTO> items;
     public double totalPrice;
     public String orderDatePretty;
-    public int price;
 
-    public OrderResponse() {
-    }
+    public OrderResponse() {}
 
-    public OrderResponse(Long id, Long userId, LocalDateTime orderDate, OrderStatus status, List<OrderItemDTO> items, String username, double totalPrice, int price) {
+    public OrderResponse(Long id, Long userId, LocalDateTime orderDate,
+                         OrderStatus status, List<OrderItemDTO> items,
+                         String username, double totalPrice) {
         this.id = id;
         this.userId = userId;
         this.orderDate = orderDate;
@@ -31,9 +31,7 @@ public class OrderResponse {
         this.items = items;
         this.username = username;
         this.totalPrice = totalPrice;
-        this.price = price;
     }
-
 
     public OrderResponse(Order order) {
         this.id = order.id;
@@ -41,20 +39,13 @@ public class OrderResponse {
         this.username = order.user.username;
         this.orderDate = order.orderDate;
         this.status = order.status;
-        this.totalPrice = order.totalPrice != null ? order.totalPrice : 0.0;
-        this.price = price;
+        this.totalPrice = (order.totalPrice != null) ? order.totalPrice : 0.0;
 
-
-        this.items = order.items.stream().map(item -> {
-            OrderItemDTO dto = new OrderItemDTO(item.product.id, item.quantity);
-            dto.productName = item.product.name;
-            dto.price = item.product.price;
-            return dto;
-        }).toList();
-
+        this.items = order.items.stream()
+                .map(OrderItemDTO::fromEntity)
+                .toList();
 
         DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
         this.orderDatePretty = (order.orderDate != null) ? order.orderDate.format(fmt) : "";
     }
-
 }

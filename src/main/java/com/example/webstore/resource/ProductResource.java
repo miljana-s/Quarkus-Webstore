@@ -26,7 +26,7 @@ public class ProductResource {
     @Inject CategoryService categoryService;
     @Inject CartService cartService;
 
-    @Inject Template products;
+   // @Inject Template products;
 
     @Inject @Location("product-overview.html")
     Template productOverview;
@@ -134,6 +134,7 @@ public class ProductResource {
                 .render();
     }
 
+    @Inject Template products;
 
     @GET
     @Path("/overview/{id}")
